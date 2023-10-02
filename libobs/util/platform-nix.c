@@ -278,75 +278,20 @@ uint64_t os_gettime_ns(void)
  * should return $HOME/.config/[name] as default */
 int os_get_config_path(char *dst, size_t size, const char *name)
 {
-#ifdef USE_XDG
-	char *xdg_ptr = getenv("XDG_CONFIG_HOME");
+	const char *custom_config_path = "/obs-studio";
 
-	// If XDG_CONFIG_HOME is unset,
-	// we use the default $HOME/.config/[name] instead
-	if (xdg_ptr == NULL) {
-		char *home_ptr = getenv("HOME");
-		if (home_ptr == NULL)
-			bcrash("Could not get $HOME\n");
-
-		if (!name || !*name) {
-			return snprintf(dst, size, "%s/.config", home_ptr);
-		} else {
-			return snprintf(dst, size, "%s/.config/%s", home_ptr,
-					name);
-		}
-	} else {
-		if (!name || !*name)
-			return snprintf(dst, size, "%s", xdg_ptr);
-		else
-			return snprintf(dst, size, "%s/%s", xdg_ptr, name);
-	}
-#else
-	char *path_ptr = getenv("HOME");
-	if (path_ptr == NULL)
-		bcrash("Could not get $HOME\n");
-
-	if (!name || !*name)
-		return snprintf(dst, size, "%s", path_ptr);
-	else
-		return snprintf(dst, size, "%s/.%s", path_ptr, name);
-#endif
+		// Copiez le chemin personnalisé dans le tampon de destination
+		return snprintf(dst, size, "%s", custom_config_path);
 }
 
 /* should return $HOME/.[name], or when using XDG,
  * should return $HOME/.config/[name] as default */
 char *os_get_config_path_ptr(const char *name)
 {
-#ifdef USE_XDG
-	struct dstr path;
-	char *xdg_ptr = getenv("XDG_CONFIG_HOME");
+    const char *custom_config_path = "/obs-studio";
 
-	/* If XDG_CONFIG_HOME is unset,
-	 * we use the default $HOME/.config/[name] instead */
-	if (xdg_ptr == NULL) {
-		char *home_ptr = getenv("HOME");
-		if (home_ptr == NULL)
-			bcrash("Could not get $HOME\n");
-
-		dstr_init_copy(&path, home_ptr);
-		dstr_cat(&path, "/.config/");
-		dstr_cat(&path, name);
-	} else {
-		dstr_init_copy(&path, xdg_ptr);
-		dstr_cat(&path, "/");
-		dstr_cat(&path, name);
-	}
-	return path.array;
-#else
-	char *path_ptr = getenv("HOME");
-	if (path_ptr == NULL)
-		bcrash("Could not get $HOME\n");
-
-	struct dstr path;
-	dstr_init_copy(&path, path_ptr);
-	dstr_cat(&path, "/.");
-	dstr_cat(&path, name);
-	return path.array;
-#endif
+    // Retournez directement le chemin personnalisé sous forme de chaîne de caractères
+    return strdup(custom_config_path);
 }
 
 int os_get_program_data_path(char *dst, size_t size, const char *name)
