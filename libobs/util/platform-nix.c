@@ -299,7 +299,6 @@ int os_get_program_data_path(char *dst, size_t size, const char *name)
 	return snprintf(dst, size, "/usr/local/share/%s", !!name ? name : "");
 }
 
-
 char *os_get_program_data_path_ptr(const char *name)
 {
 	size_t len =
